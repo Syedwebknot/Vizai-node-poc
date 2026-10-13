@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package viz.connector.v1;
+
+// VizGateway is the connection the Node connector dials out to.
+// A job is one request and one response. The stream stays open so VizAI
+// can push that job without opening a port into the client network.
+service VizGateway {
+  rpc Connect(stream AgentMessage) returns (stream VizMessage);
+}
+
+message ExecuteQueryRequest {
+  string request_id = 1;
+  string connector_id = 2;
+  string sql = 3;
+  int32 timeout_seconds = 4;
+  int32 max_rows = 5;
+  int32 max_bytes = 6;
+}
+
+message Column {
+  string name = 1;
+  string type = 2;
+}
+
+message SqlRow {
+  repeated string values = 1;
+}
+
+message ExecuteQueryResponse {
+  string request_id = 1;
+  repeated Column columns = 2;
+  repeated SqlRow rows = 3;
+  int32 row_count = 4;
+  bool truncated = 5;
+  int64 execution_time_ms = 6;
+  string error = 7;
+}
+
+message Hello {
+  string connector_id = 1;
+  string token = 2;
+}
+
+message SchemaColumn {
+  string name = 1;
+  string type = 2;
+}
+
+message SchemaTable {
+  string name = 1;
+  repeated SchemaColumn columns = 2;
+}
+
+message SchemaPush {
+  string schema_name = 1;
+  repeated SchemaTable tables = 2;
+}
+
+message AgentMessage {
+  oneof payload {
+    Hello hello = 1;
+    ExecuteQueryResponse result = 2;
+    SchemaPush schema = 3;
+  }
+}
+
+message VizMessage {
+  oneof payload {
+    ExecuteQueryRequest job = 1;
+  }
+}

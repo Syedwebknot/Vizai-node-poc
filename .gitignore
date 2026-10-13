@@ -1,0 +1,5 @@
+python/.venv/
+python/__pycache__/
+node/node_modules/
+node/.env
+.env

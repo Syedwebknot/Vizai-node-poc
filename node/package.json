@@ -1,0 +1,11 @@
+{
+  "name": "viz-node-connector-poc",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.8.0",
+    "dotenv": "^16.4.7",
+    "pg": "^8.16.3"
+  }
+}
